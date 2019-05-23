@@ -5,8 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AccessLevel;
@@ -34,8 +37,9 @@ public class Items {
 	@Column
 	private String item_content;
 	
-	@JsonManagedReference
-	@OneToMany(mappedBy="items")
+	@JsonBackReference
+	@ManyToOne
+	@JoinColumn(name="tag_id", referencedColumnName="tag_id")
 	private ItemTags item_tags;
 
 	@Builder
