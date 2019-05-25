@@ -2,6 +2,7 @@ package com.yk.web.controllers;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,9 +27,14 @@ public class WebController {
 	
 	@PostMapping("/search")
 	public String search(ItemRequestDto dto, Model model) {
-		dto.setItem_link("http://www.mkyong.com");
-		List<HashMap<String, String>> results = itemService.getArticle(dto);
-		model.addAttribute("searchResult", results);
+		long startTime = System.nanoTime();
+		List<HashMap<String, String>> searchResult = itemService.getArticles(dto);
+		long endTime = System.nanoTime();
+		long duration = (endTime - startTime);
+		long convertedDuration = TimeUnit.SECONDS.convert(duration, TimeUnit.NANOSECONDS);
+		
+		model.addAttribute("searchResult", searchResult);
+		model.addAttribute("duration", convertedDuration);
 		return "main";
 	}
 }
