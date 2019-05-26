@@ -31,15 +31,15 @@ public class ItemTags {
 	@Column
 	private String tag_name;
 	
-	@JsonManagedReference
+/*	@JsonManagedReference
 	@OneToMany(mappedBy="item_tags")
-	private List<Items> items;
+	private List<Items> items;*/
 
 	@Builder
 	public ItemTags(long tag_id, String tag_name, List<Items> items) {
 		this.tag_id = tag_id;
 		this.tag_name = tag_name;
-		this.items = items;
+		//this.items = items;
 	}
 	
 }

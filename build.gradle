@@ -31,4 +31,5 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	
 	compile 'org.jsoup:jsoup:1.12.1'
+	testCompile 'junit:junit:4.12'
 }
