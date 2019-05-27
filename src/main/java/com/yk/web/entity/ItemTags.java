@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 public class ItemTags {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long tag_id;
+	private Long tag_id;
 	
 	@Column
 	private String tag_name;

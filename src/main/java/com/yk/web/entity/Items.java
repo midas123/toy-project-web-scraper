@@ -1,10 +1,13 @@
 package com.yk.web.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -16,15 +19,17 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-public class Items extends BaseTimeEntity{
+@NoArgsConstructor
+public class Items {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private long item_id;
-	
 	@Column
+	private Long item_id;
+	
+	@Column(length = 300)
 	private String item_title;
 	
-	@Column
+	@Column(length = 300)
 	private String item_link;
 	
 /*	@JsonBackReference
@@ -32,16 +37,21 @@ public class Items extends BaseTimeEntity{
 	@JoinColumn(name="tag_id", referencedColumnName="tag_id")
 	private ItemTags item_tags;*/
 	
-	@JsonBackReference
-	@OneToOne(mappedBy="item")
-	private ItemIndexes itemIndex;
+	//@JsonBackReference
+	@OneToOne(mappedBy = "item")
+	private ItemIndexes itemIndexes;
 	
-	public void setItemIndex(ItemIndexes itemIndex) {
-		this.itemIndex = itemIndex;
+	
+	public void setItemIndexes(ItemIndexes itemIndexes) {
+		this.itemIndexes = itemIndexes;
 	}
 	
-	public Items() {
-		
+	public void setItemIndexToken(String token) {
+		itemIndexes.setTokens(token);
+	}
+	
+	public Items(Long item_id) {
+		this.item_id = item_id;
 	}
 	
 	public Items(String item_title, String item_link) {
@@ -50,12 +60,10 @@ public class Items extends BaseTimeEntity{
 	}
 
 	@Builder
-	public Items(long item_id, String item_title, String item_link, ItemTags item_tags, ItemIndexes itemIndex) {
-		this.item_id = item_id;
+	public Items(String item_title, String item_link, ItemIndexes itemIndexes) {
 		this.item_title = item_title;
 		this.item_link = item_link;
-		//this.item_tags = item_tags;
-		this.itemIndex = itemIndex;
+		this.itemIndexes = itemIndexes;
 	}
 	
 	public void setItem_title(String item_title) {

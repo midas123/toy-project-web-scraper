@@ -28,16 +28,24 @@ public class ItemServiceTest {
 	
 	@After
 	public void cleanUp() {
-		itemIndexRepository.deleteAll();
+		//itemIndexRepository.deleteAll();
 	}
 	
 	
 	@Test
 	public void testScrapArticles() {
 		//given
+		Items i = itemRepository.save(Items.builder()
+				//.itemIndexes(new ItemIndexes())
+				.item_link("link")
+				.item_title("title")
+				.build());
+		
+		long item_id = i.getItem_id();
+		
 		itemIndexRepository.save(ItemIndexes.builder()
 				.tokens("token")
-				.item(new Items("title", "link"))
+				.item(new Items(item_id))
 				.build());
 		
 		//when

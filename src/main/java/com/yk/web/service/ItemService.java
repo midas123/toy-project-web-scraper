@@ -2,9 +2,12 @@ package com.yk.web.service;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,7 +39,7 @@ public class ItemService {
 		
 		return null;
 	}
-	@Transactional
+	
 	public long scrapArticles(ItemRequestDto dto) {
 		//if 7일 경과 또는 items 테이블 데이터X
 		//if(itemRepository.findAll())
@@ -44,11 +47,13 @@ public class ItemService {
 		
 		List<String> links = setLinks();
 		List<Element> categoryLinks = getCategoryNameAndLink(links);
-		List<ItemIndexes> items = getArticleTitleAndLink(categoryLinks);
+		List<ItemRequestDto> items = getArticleTitleAndLink(categoryLinks);
 		
-//		itemIndexRepository.saveAll(items);
-		itemIndexRepository.save(items.get(0));
-		//items.add(item);
+		System.out.println("items.get(0):"+items.get(0));
+		Items i = itemRepository.save(items.get(0).toItemEntity());
+		long item_id = i.getItem_id();
+		
+		itemIndexRepository.save(ItemIndexes.builder().item(new Items(item_id)).tokens(items.get(0).getTokens()).build());
 		
 		return items.size();
 	}
@@ -66,11 +71,10 @@ public class ItemService {
 		for(String s: links) {
 			try {
 				Document document = Jsoup.connect(s).get();
-				//Elements categoryElement = document.select("li a[href]");
-				Elements categoryElement = document.select("li a[href~=\\/(.)[/.*(?i)spring.*|.*(?i)java.*]]");
-				for(Element e: categoryElement) {
-					//if(e.text().matches(RegKeywords[0]))
-						categoryTitleAndLink.add(e);
+				Elements categoryElements = document.select("li a[href~=\\/(.)[/.*(?i)spring.*|.*(?i)java.*]]");
+				//for(Element e: categoryElement) {
+				for(int i=0; i<2; i++) {
+						categoryTitleAndLink.add(categoryElements.get(i));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -80,8 +84,9 @@ public class ItemService {
 		return categoryTitleAndLink;
 	}
 	
-	private List<ItemIndexes> getArticleTitleAndLink(List<Element> categoryLinks){
-		List<ItemIndexes> articles = new ArrayList<>();
+	private List<ItemRequestDto> getArticleTitleAndLink(List<Element> categoryLinks){
+		List<ItemRequestDto> articles = new ArrayList<>();
+		//List<Items> articles = new ArrayList<>();
 		
 		for(Element el: categoryLinks) {
 			try {
@@ -89,13 +94,14 @@ public class ItemService {
 				Elements elements = document.select("li a[href~=\\/(.)[/.*(?i)spring.*|.*(?i)java.*]]");
 				for(Element element : elements) {
 					ItemRequestDto item = new ItemRequestDto();
-					String token = tokenizer(element.text());
-					
+					String token = tokenizer(element.attr("abs:href"));
 					item.setItem_title(element.text());
 					item.setItem_link(element.attr("abs:href"));
-					item.setItemIndex(new ItemIndexes(token));
+					item.setTokens(token);
 					
-					articles.add(item.toIndexEntity());
+					if(token != "") {
+						articles.add(item);
+					}	
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -105,41 +111,18 @@ public class ItemService {
 		return articles;
 	}
 	
-	private String tokenizer(String title) {
-		String[] tokens = title.trim().split("-");
-		String token = String.join(",", tokens);
-	/*	StringBuilder builder = new StringBuilder();
-		for(String s: tokens) {
-			builder.append(s);
-		}*/
+	private String tokenizer(String link) throws MalformedURLException {
+		String path = new URL(link).getPath();
+		String token ="";
+		if(path.length()>0) {
+			path = path.substring(0, path.length()-1);
+			String title = path.substring(path.lastIndexOf("/")+1, path.length());
+			String[] tokens = title.trim().split("-");
+			token = String.join(",", tokens);
+		}
 		return token;
 	}
 	
-/*	private List<HashMap<String, String>> getArticleTitleAndLink(List<Element> categoryLinks, String[] keyword){
-		List<HashMap<String, String>> articles = new ArrayList<>();
-		
-		for(Element el: categoryLinks) {
-			try {
-				Document document = Jsoup.connect(el.attr("abs:href")).get();
-				//Elements elements = document.select("li a[href]");
-				Elements elements = document.select("li a[href~=\\/(.)[/.*(?i)spring.*|.*(?i)java.*]]");
-				for(Element element : elements) {
-					//if(element.text().matches((keyword.length ==2) ? keyword[1]:keyword[0])) {
-						HashMap<String, String> article = new HashMap<>();
-						article.put("title", element.text());
-						article.put("link", element.attr("abs:href"));
-						articles.add(article);
-					//}
-						
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.err.println(e.getMessage());
-			}
-		}
-		//writeToFile(articles);
-		return articles;
-	}*/
 	
 	private String[] writeRegExp(String keyword) {
 		if(keyword.contains(" ")) {
