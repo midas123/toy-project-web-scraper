@@ -11,10 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.yk.web.dto.ItemRequestDto;
+import com.yk.web.entity.Items;
 import com.yk.web.service.ItemService;
+import com.yk.web.service.WebScrapService;
 
 @Controller
 public class WebController {
+	@Autowired
+	WebScrapService webScrapService;
+	
 	@Autowired
 	ItemService itemService;
 	
@@ -27,7 +32,7 @@ public class WebController {
 	@GetMapping("/scrap")
 	public String scrap(ItemRequestDto dto, Model model) {
 		long startTime = System.nanoTime();
-		HashMap<String, Long> Counts = itemService.scrapArticles(dto);
+		HashMap<String, Long> Counts = webScrapService.scrapArticles(dto);
 		long endTime = System.nanoTime();
 		long duration = (endTime - startTime);
 		long convertedDuration = TimeUnit.SECONDS.convert(duration, TimeUnit.NANOSECONDS);
@@ -40,6 +45,8 @@ public class WebController {
 	
 	@PostMapping("/search")
 	public String search(ItemRequestDto dto, Model model) {
+		List<Items> items = itemService.searchArticle(dto);
+		model.addAttribute("searchResult", items);
 		
 		return "main";
 	}

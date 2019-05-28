@@ -29,7 +29,7 @@ public class ItemServiceTest2 {
 	private ItemRepository itemRepository;
 	
 	@Autowired
-	private ItemService itemService;
+	private WebScrapService itemService;
 	
 	@Rule
 	public OutputCapture outputCapture = new OutputCapture();
@@ -38,7 +38,7 @@ public class ItemServiceTest2 {
 	public void testScrapArticles() throws MalformedURLException {
 		List<Items> item = itemRepository.findAll();
 		for(int i=0; i<item.size(); i++) {
-			String link = item.get(i).getItem_link();
+			String link = item.get(i).getItemLink();
 			String token = itemService.tokenizer(link);
 			System.out.println("link:"+link+"  token:"+token);
 		}

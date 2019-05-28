@@ -1,14 +1,11 @@
 package com.yk.web.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
 import lombok.Builder;
@@ -27,13 +24,13 @@ public class ItemIndexes {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column
-	private Long index_id;
+	private Long indexId;
 
 	@Column(length = 400)
 	private String tokens;
 	
 	@OneToOne
-	@JoinColumn(name="item_id", referencedColumnName="item_id")
+	@JoinColumn(name="itemId", referencedColumnName="itemId")
 	private Items item;
 	
 	public void setItem(Items item) {

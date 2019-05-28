@@ -19,7 +19,7 @@ import com.yk.web.entity.Items;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ItemServiceTest {
+public class WebScrapServiceTest {
 	@Autowired
 	private ItemIndexRepository itemIndexRepository;
 	
@@ -37,11 +37,11 @@ public class ItemServiceTest {
 		//given
 		Items i = itemRepository.save(Items.builder()
 				//.itemIndexes(new ItemIndexes(""))
-				.item_link("link")
-				.item_title("title")
+				.itemLink("link")
+				.itemTitle("title")
 				.build());
 		
-		long item_id = i.getItem_id();
+		long item_id = i.getItemId();
 		
 		itemIndexRepository.save(ItemIndexes.builder()
 				.tokens("token")
@@ -59,7 +59,7 @@ public class ItemServiceTest {
 		Items item = list2.get(0);
 		
 		assertThat(itemIndexes.getTokens(), is("token"));
-		assertThat(item.getItem_title(), is("title"));
-		assertThat(item.getItem_link(), is("link"));
+		assertThat(item.getItemTitle(), is("title"));
+		assertThat(item.getItemLink(), is("link"));
 	}
 }

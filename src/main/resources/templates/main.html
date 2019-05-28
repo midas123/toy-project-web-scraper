@@ -96,9 +96,9 @@ table {
       </tr>
         <tr th:each="article: ${searchResult}">
 	        <!-- <td th:text="${article.subject}"></td> -->
-	        <td><a class="link_cont" th:href="@{${article.link}}">
-	        <strong class="tit_info" th:text="${article.title}"></strong></a></td>
-      	<!-- 	<td th:text="${article.link}"></td> -->
+	        <td><a class="link_cont" th:href="@{${article.itemLink}}">
+	        <strong class="tit_info" th:text="${article.itemTitle}"></strong></a></td>
+      	 	<td th:text="${article.itemLink}"></td>
       	</tr>
       </table>
     </article>

@@ -16,11 +16,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class ItemRequestDto {
-	private String item_title;
+	private String itemTitle;
 	
-	private String item_link;
+	private String itemLink;
 	
-	private String tag_name;
+	private String tagName;
 	
 	private String keyword;
 	
@@ -44,8 +44,8 @@ public class ItemRequestDto {
 	
 	public Items toItemEntity() {
 		return Items.builder()
-				.item_link(item_link)
-				.item_title(item_title)
+				.itemLink(itemLink)
+				.itemTitle(itemTitle)
 				.itemIndexes(itemIndexes)
 				.build();
 	}
