@@ -23,7 +23,7 @@ header {
 nav {
   float: left;
   width: 20%;
-  background: #ccc;
+  background: #f1f1f1;
   padding: 20px;
 }
 
@@ -36,7 +36,7 @@ article {
   float: left;
   padding: 20px;
   width: 80%;
-  background-color: #f1f1f1;
+  background-color: White;
 }
 
 section:after {
@@ -86,7 +86,9 @@ table {
       </ul>
     </nav>
     <article>
-    <div id="results">검색결과(소요시간:<span th:text="${duration}">0</span>)초,&nbsp;글 갯수:<span th:text="${articleCounts}">0</span>)개</div>
+    <div id="results">검색결과(소요시간:<span th:text="${duration != null} ? ${duration}:'0' "></span>초,
+    &nbsp;카테고리:<span th:text="${categoryCounts != null} ? ${categoryCounts}: '0'"></span>개
+    &nbsp;글:<span th:text="${articleCounts != null} ? ${articleCounts}: '0'"></span>개)</div>
       <table>
       <tr class="result_category">
       	<th class="result_name">제목</th>

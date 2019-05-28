@@ -36,7 +36,7 @@ public class ItemServiceTest {
 	public void testScrapArticles() {
 		//given
 		Items i = itemRepository.save(Items.builder()
-				//.itemIndexes(new ItemIndexes())
+				//.itemIndexes(new ItemIndexes(""))
 				.item_link("link")
 				.item_title("title")
 				.build());
@@ -62,5 +62,4 @@ public class ItemServiceTest {
 		assertThat(item.getItem_title(), is("title"));
 		assertThat(item.getItem_link(), is("link"));
 	}
-
 }

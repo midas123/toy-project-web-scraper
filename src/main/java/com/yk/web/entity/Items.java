@@ -38,6 +38,7 @@ public class Items {
 	private ItemTags item_tags;*/
 	
 	//@JsonBackReference
+	//@OneToOne(mappedBy = "item", cascade=CascadeType.ALL)
 	@OneToOne(mappedBy = "item")
 	private ItemIndexes itemIndexes;
 	

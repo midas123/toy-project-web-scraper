@@ -1,5 +1,6 @@
 package com.yk.web.controllers;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -26,12 +27,13 @@ public class WebController {
 	@GetMapping("/scrap")
 	public String scrap(ItemRequestDto dto, Model model) {
 		long startTime = System.nanoTime();
-		long articleCounts = itemService.scrapArticles(dto);
+		HashMap<String, Long> Counts = itemService.scrapArticles(dto);
 		long endTime = System.nanoTime();
 		long duration = (endTime - startTime);
 		long convertedDuration = TimeUnit.SECONDS.convert(duration, TimeUnit.NANOSECONDS);
 		
-		model.addAttribute("articleCounts", articleCounts);
+		model.addAttribute("categoryCounts", Counts.get("categoryCounts"));
+		model.addAttribute("articleCounts", Counts.get("articleCounts"));
 		model.addAttribute("duration", convertedDuration);
 		return "main";
 	}

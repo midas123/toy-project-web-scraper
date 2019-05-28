@@ -9,7 +9,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -35,27 +38,31 @@ public class ItemService {
 	@Autowired
 	private ItemRepository itemRepository;
 	
-	public List<HashMap<String, String>> searchArticles(){
-		
-		return null;
-	}
 	
-	public long scrapArticles(ItemRequestDto dto) {
+	public HashMap<String, Long> scrapArticles(ItemRequestDto dto) {
 		//if 7일 경과 또는 items 테이블 데이터X
-		//if(itemRepository.findAll())
 		//String[] RegKeywords = writeRegExp("java");
 		
 		List<String> links = setLinks();
-		List<Element> categoryLinks = getCategoryNameAndLink(links);
+		Elements categoryLinks = getCategoryNameAndLink(links);
 		List<ItemRequestDto> items = getArticleTitleAndLink(categoryLinks);
 		
-		System.out.println("items.get(0):"+items.get(0));
-		Items i = itemRepository.save(items.get(0).toItemEntity());
-		long item_id = i.getItem_id();
+		for(int j=0; j<items.size()/6; j++) {
+			Items item = itemRepository.save(items.get(j).toItemEntity());
+			long item_id = item.getItem_id();
+			
+			itemIndexRepository.save(ItemIndexes.builder()
+					.item(new Items(item_id))
+					.tokens(items.get(j).getTokens())
+					.build());
+		}
 		
-		itemIndexRepository.save(ItemIndexes.builder().item(new Items(item_id)).tokens(items.get(0).getTokens()).build());
 		
-		return items.size();
+		HashMap<String, Long> resultCounts = new HashMap<>();
+		resultCounts.put("categoryCounts", (long) categoryLinks.size());
+		resultCounts.put("articleCounts", (long) items.size());
+		
+		return resultCounts;
 	}
 	
 	
@@ -66,58 +73,67 @@ public class ItemService {
 		return links;
 	}
 	
-	private List<Element> getCategoryNameAndLink(List<String> links) {
-		List<Element> categoryTitleAndLink = new ArrayList<>();
+	private Elements getCategoryNameAndLink(List<String> links) {
+		Elements categoryElements = new Elements();
 		for(String s: links) {
 			try {
 				Document document = Jsoup.connect(s).get();
-				Elements categoryElements = document.select("li a[href~=\\/(.)[/.*(?i)spring.*|.*(?i)java.*]]");
-				//for(Element e: categoryElement) {
-				for(int i=0; i<2; i++) {
-						categoryTitleAndLink.add(categoryElements.get(i));
-				}
+				categoryElements = document.select("li a[href~=\\/(.)[/.*(?i)spring.*|.*(?i)java.*]]");
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.err.println(e.getMessage());
 			}
 		}
-		return categoryTitleAndLink;
+		return categoryElements;
 	}
 	
-	private List<ItemRequestDto> getArticleTitleAndLink(List<Element> categoryLinks){
+	private List<ItemRequestDto> getArticleTitleAndLink(Elements categoryLinks){
 		List<ItemRequestDto> articles = new ArrayList<>();
-		//List<Items> articles = new ArrayList<>();
-		
+		Elements elements = new Elements();
 		for(Element el: categoryLinks) {
 			try {
 				Document document = Jsoup.connect(el.attr("abs:href")).get();
-				Elements elements = document.select("li a[href~=\\/(.)[/.*(?i)spring.*|.*(?i)java.*]]");
-				for(Element element : elements) {
-					ItemRequestDto item = new ItemRequestDto();
-					String token = tokenizer(element.attr("abs:href"));
-					item.setItem_title(element.text());
-					item.setItem_link(element.attr("abs:href"));
-					item.setTokens(token);
-					
-					if(token != "") {
-						articles.add(item);
-					}	
-				}
+				elements = document.select("li a[href~=\\/(.)[/.*(?i)spring.*|.*(?i)java.*]]");
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.err.println(e.getMessage());
 			}
+		}	
+		for(Element element : elements) {
+			System.out.println("element"+element);
+			ItemRequestDto item = new ItemRequestDto();
+			String token = null;
+			try {
+				token = tokenizer(element.attr("abs:href"));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+				System.err.println(e.getMessage());
+			}
+			item.setItem_title(element.text());
+			item.setItem_link(element.attr("abs:href"));
+			item.setTokens(token);
+			
+			if(token != null) {
+				articles.add(item);
+			}	
 		}
 		return articles;
 	}
 	
-	private String tokenizer(String link) throws MalformedURLException {
+	public String tokenizer(String link) throws MalformedURLException {
 		String path = new URL(link).getPath();
 		String token ="";
 		if(path.length()>0) {
-			path = path.substring(0, path.length()-1);
-			String title = path.substring(path.lastIndexOf("/")+1, path.length());
+			String title = link.substring(link.indexOf("/", 9), link.length()-1);
+			title = title.replaceFirst("/", "").replaceAll("/", "-");
 			String[] tokens = title.trim().split("-");
+			
+			Set<String> set = new LinkedHashSet <>(); //remove duplicate in order
+			for(String str: tokens) {
+				set.add(str);
+			}
+			
+			tokens = set.toArray(new String[set.size()]);
 			token = String.join(",", tokens);
 		}
 		return token;
