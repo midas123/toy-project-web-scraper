@@ -46,6 +46,7 @@ public class WebController {
 	@PostMapping("/search")
 	public String search(ItemRequestDto dto, Model model) {
 		List<Items> items = itemService.searchArticle(dto);
+		System.out.println("items:"+items);
 		model.addAttribute("searchResult", items);
 		
 		return "main";

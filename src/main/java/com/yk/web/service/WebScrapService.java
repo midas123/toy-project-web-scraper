@@ -38,16 +38,12 @@ public class WebScrapService {
 	@Autowired
 	private ItemRepository itemRepository;
 	
-	
 	public HashMap<String, Long> scrapArticles(ItemRequestDto dto) {
-		//if 7일 경과 또는 items 테이블 데이터X
-		//String[] RegKeywords = writeRegExp("java");
-		
 		List<String> links = setLinks();
 		Elements categoryLinks = getCategoryNameAndLink(links);
 		List<ItemRequestDto> items = getArticleTitleAndLink(categoryLinks);
 		
-		for(int j=0; j<items.size()/6; j++) {
+		for(int j=0; j<items.size(); j++) {
 			Items item = itemRepository.save(items.get(j).toItemEntity());
 			long item_id = item.getItemId();
 			
@@ -56,8 +52,6 @@ public class WebScrapService {
 					.tokens(items.get(j).getTokens())
 					.build());
 		}
-		
-		
 		HashMap<String, Long> resultCounts = new HashMap<>();
 		resultCounts.put("categoryCounts", (long) categoryLinks.size());
 		resultCounts.put("articleCounts", (long) items.size());
@@ -88,11 +82,12 @@ public class WebScrapService {
 	}
 	
 	private List<ItemRequestDto> getArticleTitleAndLink(Elements categoryLinks){
-		List<ItemRequestDto> articles = new ArrayList<>();
+		Set<ItemRequestDto> articles = new HashSet<>();
 		Elements elements = new Elements();
-		for(Element el: categoryLinks) {
+		for(int i=0; i<categoryLinks.size()/4; i++) {
+		//for(Element el: categoryLinks) {
 			try {
-				Document document = Jsoup.connect(el.attr("abs:href")).get();
+				Document document = Jsoup.connect(categoryLinks.get(i).attr("abs:href")).get();
 				elements = document.select("li a[href~=\\/(.)[/.*(?i)spring.*|.*(?i)java.*]]");
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -100,7 +95,6 @@ public class WebScrapService {
 			}
 		}	
 		for(Element element : elements) {
-			System.out.println("element"+element);
 			ItemRequestDto item = new ItemRequestDto();
 			String token = null;
 			try {
@@ -117,7 +111,7 @@ public class WebScrapService {
 				articles.add(item);
 			}	
 		}
-		return articles;
+		return new ArrayList<ItemRequestDto>(articles);
 	}
 	
 	public String tokenizer(String link) throws MalformedURLException {
@@ -138,7 +132,6 @@ public class WebScrapService {
 		}
 		return token;
 	}
-	
 	
 	private String[] writeRegExp(String keyword) {
 		if(keyword.contains(" ")) {
