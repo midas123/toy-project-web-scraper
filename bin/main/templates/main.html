@@ -33,10 +33,11 @@ nav ul {
 }
 
 article {
-  float: left;
   padding: 20px;
   width: 80%;
   background-color: White;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 section:after {
@@ -68,6 +69,10 @@ table {
 	font-size: 18px;
 }
 
+.result_category {
+	background-color: #dddddd;
+}
+
 </style>
 </head>
 <body>
@@ -78,27 +83,32 @@ table {
   </form>
   </header>
   <section>
-    <nav>
+<!--     <nav>
       <ul>
         <li>
          MENU
         </li>
       </ul>
-    </nav>
+    </nav> -->
     <article>
-    <div id="results">검색결과(소요시간:<span th:text="${duration != null} ? ${duration}:'0' "></span>초,
+    <div id="results">
+    	검색결과(소요시간:<span th:text="${duration != null} ? ${duration}:'0' "></span>초,
     &nbsp;카테고리:<span th:text="${categoryCounts != null} ? ${categoryCounts}: '0'"></span>개
-    &nbsp;글:<span th:text="${articleCounts != null} ? ${articleCounts}: '0'"></span>개)</div>
+    &nbsp;글:<span th:text="${articleCounts != null} ? ${articleCounts}: '0'"></span>개)
+    </div>
       <table>
       <tr class="result_category">
       	<th class="result_name">제목</th>
       	<th class="result_url">웹사이트 URL</th>
       </tr>
-        <tr th:each="article: ${searchResult}">
+        <tr th:if="${searchResult}" th:each="article: ${searchResult}">
 	        <!-- <td th:text="${article.subject}"></td> -->
 	        <td><a class="link_cont" th:href="@{${article.itemLink}}">
 	        <strong class="tit_info" th:text="${article.itemTitle}"></strong></a></td>
       	 	<td th:text="${article.itemLink}"></td>
+      	</tr>
+      	<tr th:unless="${searchResult}">
+      	<td colspan="2" align="center" style="padding:50px;">검색결과 없음</td>
       	</tr>
       </table>
     </article>

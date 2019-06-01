@@ -3,10 +3,8 @@ package com.yk.web.service;
 import static org.junit.Assert.*;
 
 import java.net.MalformedURLException;
-import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.yk.web.DataScraping;
 import com.yk.web.dao.ItemIndexRepository;
 import com.yk.web.dao.ItemRepository;
 import com.yk.web.entity.Items;
@@ -29,7 +28,7 @@ public class ItemServiceTest2 {
 	private ItemRepository itemRepository;
 	
 	@Autowired
-	private WebScrapService itemService;
+	DataScraping dataScraping;
 	
 	@Rule
 	public OutputCapture outputCapture = new OutputCapture();
@@ -39,7 +38,7 @@ public class ItemServiceTest2 {
 		List<Items> item = itemRepository.findAll();
 		for(int i=0; i<item.size(); i++) {
 			String link = item.get(i).getItemLink();
-			String token = itemService.tokenizer(link);
+			String token = dataScraping.tokenizer(link);
 			System.out.println("link:"+link+"  token:"+token);
 		}
 	}

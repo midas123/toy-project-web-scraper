@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yk.web.SearchProcessing;
 import com.yk.web.dao.ItemIndexRepository;
 import com.yk.web.dao.ItemRepository;
 import com.yk.web.dto.ItemRequestDto;
@@ -20,14 +21,17 @@ public class ItemService {
 	@Autowired
 	ItemIndexRepository itemIndexRepository;
 	
+	@Autowired
+	SearchProcessing searchProcessing;
+	
 	public List<Items> searchArticle(ItemRequestDto dto){
-		List<String> keywords = ListingKeyword(dto);
+		List<String> keywords = searchProcessing.listingKeyword(dto);
 		List<ItemIndexes> itemIndexes1R = itemIndexRepository.findByTokensContaining(keywords.get(0));
 		List<ItemIndexes> itemIndexes2R = new ArrayList<>();
 		List<Items> searchResult = new ArrayList<>();
 		
 		if(keywords.size()>1) {
-			itemIndexes2R = searchItembyToken(keywords, itemIndexes1R);
+			itemIndexes2R = searchProcessing.searchItembyToken(keywords, itemIndexes1R);
 			searchResult = findItem(itemIndexes2R);
 		} else {
 			searchResult = findItem(itemIndexes1R);
@@ -44,39 +48,5 @@ public class ItemService {
 		}
 		
 		return searchResult;
-	}
-	
-	
-	private List<String> ListingKeyword(ItemRequestDto dto){
-		String keyword = dto.getKeyword();
-		keyword = keyword.trim().replaceAll("[^a-zA-Z0-9]", " ");
-		String[] keywords = keyword.split(" ");
-		
-		List<String> list = new ArrayList<>();
-		if(keywords.length>1) {
-			for(int i=0; i<keywords.length; i++) {
-		    	if(!keywords[i].equals("")) {
-		    		list.add(keywords[i]);
-		    	}
-			}
-		} else {
-			list.add(keyword);
-		}
-		return list;
-	}
-	
-	private List<ItemIndexes> searchItembyToken(List<String> keywords, List<ItemIndexes> itemIndexes){
-		List<ItemIndexes> itemIndexesByKeyword = new ArrayList<>();
-		if(keywords.size()>1) {
-			for(int i=1; i<keywords.size(); i++) {
-				for(int j=0; j<itemIndexes.size(); j++) {
-					String token = itemIndexes.get(j).getTokens();
-					if(token.contains(keywords.get(i))) {
-						itemIndexesByKeyword.add(itemIndexes.get(j));
-					} 
-				}
-			}
-		}
-		return itemIndexesByKeyword;
 	}
 }
