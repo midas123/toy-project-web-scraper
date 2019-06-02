@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yk.web.SearchProcessing;
+import com.yk.web.KeywordFinder;
 import com.yk.web.dao.ItemIndexRepository;
 import com.yk.web.dao.ItemRepository;
 import com.yk.web.dto.ItemRequestDto;
@@ -22,7 +22,7 @@ public class ItemService {
 	ItemIndexRepository itemIndexRepository;
 	
 	@Autowired
-	SearchProcessing searchProcessing;
+	KeywordFinder searchProcessing;
 	
 	public List<Items> searchArticle(ItemRequestDto dto){
 		List<String> keywords = searchProcessing.listingKeyword(dto);
