@@ -45,8 +45,14 @@ public class WebController {
 	
 	@PostMapping("/search")
 	public String search(ItemRequestDto dto, Model model) {
+		long startTime = System.nanoTime();
 		List<Items> items = itemService.searchArticle(dto);
-		System.out.println("items:"+items);
+		long endTime = System.nanoTime();
+		long duration = (endTime - startTime);
+		long convertedDuration = TimeUnit.SECONDS.convert(duration, TimeUnit.NANOSECONDS);
+		
+		model.addAttribute("articleCounts", items.size());
+		model.addAttribute("duration", convertedDuration);
 		model.addAttribute("searchResult", items);
 		
 		return "main";

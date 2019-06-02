@@ -3,7 +3,7 @@
 xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"></link>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <title>Insert title here</title>
 <style>
 @charset "UTF-8";
@@ -20,12 +20,12 @@ header {
   color: white;
 }
 
-nav {
+/* nav {
   float: left;
   width: 20%;
   background: #f1f1f1;
   padding: 20px;
-}
+} */
 
 nav ul {
   list-style-type: none;
@@ -36,8 +36,8 @@ article {
   padding: 20px;
   width: 80%;
   background-color: White;
-  margin-left: auto;
-  margin-right: auto;
+  margin:0 auto; 
+
 }
 
 section:after {
@@ -65,21 +65,88 @@ table {
       }
 
 #results {
-	text-align: center;
-	font-size: 18px;
+	float:right;
+	font-size: 15px;
+	width: 250px;
+}
+
+.res span{
+	display: inline;
+  	height: 100px;
 }
 
 .result_category {
 	background-color: #dddddd;
 }
 
+.result_article td  strong{
+	color: #262626!important;
+    cursor: pointer;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+
+
+
+.scrap-btn {
+	background-color: #ec9787;
+	border: none;
+	color: white;
+	padding: 12px 25px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 14px;
+	margin: 20px;
+	cursor: pointer;
+}
+
+form.search-form{
+	width:20%;
+	margin:auto;
+	margin-bottom: 10px;
+}
+
+form.search-form input[type=text] {
+	padding: 5px;
+	font-size: 17px;
+	float: left;
+	width: 80%;
+	background: white;
+	border: none;
+}
+
+form.search-form button {
+	float: left;
+	width: 20%;
+	padding: 5px;
+	background: #41688b;
+	color: white;
+	font-size: 17px;
+	cursor: pointer;
+	border: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+
 </style>
 </head>
 <body>
   <header>
-  <form id="find-by-keword" method="post" th:action="@{/search}">
-    검색어: <input type="text" name="keyword"/>
-    <input type="submit" value="검색"/>
+  <form class="search-form" id="find-by-keword" method="post" th:action="@{/search}">
+    <input type="text" name="keyword" placeholder="ex) java.."/>
+    <button class="search-btn" type="submit"><i class="fa fa-search"></i></button>
   </form>
   </header>
   <section>
@@ -92,15 +159,15 @@ table {
     </nav> -->
     <article>
     <div id="results">
-    	검색결과(소요시간:<span th:text="${duration != null} ? ${duration}:'0' "></span>초,
-    &nbsp;글:<span th:text="${articleCounts != null} ? ${articleCounts}: '0'"></span>개)
+    	검색결과(소요시간:<span class="res" th:text="${duration != null} ? ${duration}:'0' "></span>초,
+    &nbsp;글:<span class="res" th:text="${articleCounts != null} ? ${articleCounts}: '0'"></span>개)
     </div>
       <table>
       <tr class="result_category">
       	<th class="result_name">제목</th>
       	<th class="result_url">웹사이트 URL</th>
       </tr>
-        <tr th:if="${searchResult}" th:each="article: ${searchResult}">
+        <tr class="result_article" th:if="${searchResult}" th:each="article: ${searchResult}">
 	        <!-- <td th:text="${article.subject}"></td> -->
 	        <td><a class="link_cont" th:href="@{${article.itemLink}}">
 	        <strong class="tit_info" th:text="${article.itemTitle}"></strong></a></td>
@@ -111,6 +178,11 @@ table {
       	</tr>
       </table>
     </article>
+    <div>
+    <form action="/scrap">
+		<input class="scrap-btn" type="submit" value="스크랩 다시하기"/>    
+    </form>
+    </div>
   </section>
   <footer>
   </footer>
