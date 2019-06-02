@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.yk.web.DataScraping;
+import com.yk.web.WebScraperOne;
 import com.yk.web.dao.ItemIndexRepository;
 import com.yk.web.dao.ItemRepository;
 import com.yk.web.entity.Items;
@@ -28,7 +28,7 @@ public class ItemServiceTest2 {
 	private ItemRepository itemRepository;
 	
 	@Autowired
-	DataScraping dataScraping;
+	WebScraperOne dataScraping;
 	
 	@Rule
 	public OutputCapture outputCapture = new OutputCapture();

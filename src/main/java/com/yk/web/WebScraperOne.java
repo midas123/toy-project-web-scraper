@@ -1,11 +1,9 @@
 package com.yk.web;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,14 +18,15 @@ import org.springframework.stereotype.Component;
 import com.yk.web.dto.ItemRequestDto;
 
 @Component
-public class DataScraping {
+public class WebScraperOne extends WebScraper{
+	@Override
 	public List<String> setLinks(){
 		List<String> links = new ArrayList<>();
 		links.add("https://howtodoinjava.com");
-		//links.add("https://www.programcreek.com");
 		return links;
 	}
 	
+	@Override
 	public Elements getCategoryNameAndLink(List<String> links) {
 		Elements categoryElements = new Elements();
 		for(String s: links) {
@@ -42,6 +41,7 @@ public class DataScraping {
 		return categoryElements;
 	}
 	
+	@Override
 	public List<ItemRequestDto> getArticleTitleAndLink(Elements categoryLinks){
 		Set<ItemRequestDto> articles = new HashSet<>();
 		Elements elements = new Elements();
@@ -74,6 +74,7 @@ public class DataScraping {
 		return new ArrayList<ItemRequestDto>(articles);
 	}
 	
+	@Override
 	public String tokenizer(String link) throws MalformedURLException {
 		String path = new URL(link).getPath();
 		String token ="";
@@ -91,45 +92,5 @@ public class DataScraping {
 			token = String.join(",", tokens);
 		}
 		return token;
-	}
-	
-	public String[] writeRegExp(String keyword) {
-		if(keyword.contains(" ")) {
-			String[] splitStr = keyword.trim().split("\\s+");
-			String[] regKeyword = new String[splitStr.length];
-			
-			for(int i=0; i<splitStr.length; i++) {
-				StringBuilder strb = new StringBuilder();
-				strb.append(".*(?i)");
-				strb.append(splitStr[i]);
-				strb.append(".*");
-				regKeyword[i] = strb.toString();
-			}
-			return regKeyword;
-			
-		} else {
-			return new String[] {".*(?i)"+keyword+".*"};
-		}
-	}
-	
-	public void writeToFile(List<HashMap<String, String>> articles) {
-		FileWriter writer;
-			try {
-				//String time = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
-				writer = new FileWriter("Titles");
-				articles.forEach(a -> {
-				
-				String temp = "title:" + a.get("title");
-				try {
-					writer.write(temp);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				});
-				writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
 	}
 }

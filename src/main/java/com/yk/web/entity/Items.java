@@ -26,13 +26,7 @@ public class Items {
 	@Column(length = 300)
 	private String itemLink;
 	
-/*	@JsonBackReference
-	@ManyToOne
-	@JoinColumn(name="tag_id", referencedColumnName="tag_id")
-	private ItemTags item_tags;*/
-	
 	//@JsonBackReference
-	//@OneToOne(mappedBy = "item", cascade=CascadeType.ALL)
 	@OneToOne(mappedBy = "item")
 	private ItemIndexes itemIndexes;
 	
