@@ -31,15 +31,13 @@ public class WebScrapService {
 		List<ItemRequestDto> allItems = new ArrayList<>();
 		
 		WebScraperOne one = new WebScraperOne();
-		List<String> links = one.setLinks();
-		Elements categoryLinks = one.getCategoryNameAndLink(links);
-		List<ItemRequestDto> items = one.getArticleTitleAndLink(categoryLinks);
+		List<String> links = one.setLinks("https://howtodoinjava.com");
+		List<ItemRequestDto> items = one.scrapByLink(links);
 		allItems.addAll(items);
 		
 		WebScraperTwo two = new WebScraperTwo();
-		List<String> links2 = two.setLinks();
-		Elements categoryLinks2 = two.getCategoryNameAndLink(links2);
-		List<ItemRequestDto> items2 = two.getArticleTitleAndLink(categoryLinks2);
+		List<String> links2 = two.setLinks("https://www.programcreek.com/");
+		List<ItemRequestDto> items2 = two.scrapByLink(links2);
 		allItems.addAll(items2);
 		
 		for(int j=0; j<allItems.size(); j++) {

@@ -17,11 +17,15 @@ import org.springframework.stereotype.Component;
 import com.yk.web.dto.ItemRequestDto;
 
 public class WebScraperTwo extends WebScraper{
+	public List<ItemRequestDto> scrapByLink(List<String> links){
+		Elements categoryLinks = getCategoryNameAndLink(links);
+		return getArticleTitleAndLink(categoryLinks);
+	}
 
 	@Override
-	public List<String> setLinks() {
+	public List<String> setLinks(String url) {
 		List<String> links = new ArrayList<String>();
-		links.add("https://www.programcreek.com/");
+		links.add(url);
 		return links;
 	}
 

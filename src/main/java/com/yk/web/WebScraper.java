@@ -11,7 +11,7 @@ import org.jsoup.select.Elements;
 import com.yk.web.dto.ItemRequestDto;
 
 public abstract class WebScraper {
-	abstract List<String> setLinks();
+	abstract List<String> setLinks(String url);
 	
 	abstract Elements getCategoryNameAndLink(List<String> links);
 	

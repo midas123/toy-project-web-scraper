@@ -31,15 +31,15 @@ public class ItemService {
 		List<Items> searchResult = new ArrayList<>();
 		
 		if(keywords.size()>1) {
-			itemIndexes2R = keywordFomatter.searchItembyToken(keywords, itemIndexes1R);
-			searchResult = findItem(itemIndexes2R);
+			itemIndexes2R = keywordFomatter.searchByKeywordsAndToken(keywords, itemIndexes1R);
+			searchResult = findItemByIndexes(itemIndexes2R);
 		} else {
-			searchResult = findItem(itemIndexes1R);
+			searchResult = findItemByIndexes(itemIndexes1R);
 		}
 		return searchResult;
 	}
 	
-	private List<Items> findItem(List<ItemIndexes> itemIndexes){
+	private List<Items> findItemByIndexes(List<ItemIndexes> itemIndexes){
 		List<Items> searchResult = new ArrayList<>();
 		
 		for(int i=0; i<itemIndexes.size(); i++) {

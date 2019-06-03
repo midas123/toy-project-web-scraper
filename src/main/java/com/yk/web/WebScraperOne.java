@@ -19,10 +19,15 @@ import com.yk.web.dto.ItemRequestDto;
 
 @Component
 public class WebScraperOne extends WebScraper{
+	public List<ItemRequestDto> scrapByLink(List<String> links){
+		Elements categoryLinks = getCategoryNameAndLink(links);
+		return getArticleTitleAndLink(categoryLinks);
+	}
+	
 	@Override
-	public List<String> setLinks(){
+	public List<String> setLinks(String url){
 		List<String> links = new ArrayList<>();
-		links.add("https://howtodoinjava.com");
+		links.add(url);
 		return links;
 	}
 	

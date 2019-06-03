@@ -28,7 +28,7 @@ public class KeywordFomatter {
 		return list;
 	}
 	
-	public List<ItemIndexes> searchItembyToken(List<String> keywords, List<ItemIndexes> itemIndexes){
+	public List<ItemIndexes> searchByKeywordsAndToken(List<String> keywords, List<ItemIndexes> itemIndexes){
 		List<ItemIndexes> itemIndexesByKeyword = new ArrayList<>();
 		if(keywords.size()>1) {
 			for(int i=1; i<keywords.size(); i++) {
