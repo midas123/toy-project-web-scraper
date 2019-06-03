@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yk.web.KeywordFinder;
+import com.yk.web.KeywordFomatter;
 import com.yk.web.dao.ItemIndexRepository;
 import com.yk.web.dao.ItemRepository;
 import com.yk.web.dto.ItemRequestDto;
@@ -22,16 +22,16 @@ public class ItemService {
 	ItemIndexRepository itemIndexRepository;
 	
 	@Autowired
-	KeywordFinder searchProcessing;
+	KeywordFomatter keywordFomatter;
 	
 	public List<Items> searchArticle(ItemRequestDto dto){
-		List<String> keywords = searchProcessing.listingKeyword(dto);
+		List<String> keywords = keywordFomatter.listingKeyword(dto);
 		List<ItemIndexes> itemIndexes1R = itemIndexRepository.findByTokensContaining(keywords.get(0));
 		List<ItemIndexes> itemIndexes2R = new ArrayList<>();
 		List<Items> searchResult = new ArrayList<>();
 		
 		if(keywords.size()>1) {
-			itemIndexes2R = searchProcessing.searchItembyToken(keywords, itemIndexes1R);
+			itemIndexes2R = keywordFomatter.searchItembyToken(keywords, itemIndexes1R);
 			searchResult = findItem(itemIndexes2R);
 		} else {
 			searchResult = findItem(itemIndexes1R);

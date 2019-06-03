@@ -9,7 +9,7 @@ import com.yk.web.dto.ItemRequestDto;
 import com.yk.web.entity.ItemIndexes;
 
 @Component
-public class KeywordFinder {
+public class KeywordFomatter {
 	public List<String> listingKeyword(ItemRequestDto dto){
 		String keyword = dto.getKeyword();
 		keyword = keyword.trim().replaceAll("[^a-zA-Z0-9]", " ");
