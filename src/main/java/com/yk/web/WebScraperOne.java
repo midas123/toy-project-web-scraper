@@ -84,8 +84,7 @@ public class WebScraperOne extends WebScraper{
 		String path = new URL(link).getPath();
 		String token ="";
 		if(path.length()>0) {
-			String title = link.substring(link.indexOf("/", 9), link.length()-1);
-			title = title.replaceFirst("/", "").replaceAll("/", "-");
+			String title = path.replaceFirst("/", "").replaceAll("/", "-");
 			String[] tokens = title.trim().split("-");
 			
 			Set<String> set = new LinkedHashSet <>(); 
