@@ -27,19 +27,17 @@ public class WebScrapService {
 	private ItemRepository itemRepository;
 	
 	
-	public HashMap<String, Long> scrapArticles(ItemRequestDto dto) {
+	public HashMap<String, Long> scrapArticles() {
 		List<ItemRequestDto> allItems = new ArrayList<>();
 		
 		WebScraperOne one = new WebScraperOne();
 		List<String> links = one.setLinks("https://howtodoinjava.com");
 		List<ItemRequestDto> items = one.scrapByLink(links);
 		allItems.addAll(items);
-		
 		WebScraperTwo two = new WebScraperTwo();
 		List<String> links2 = two.setLinks("https://www.programcreek.com/");
 		List<ItemRequestDto> items2 = two.scrapByLink(links2);
 		allItems.addAll(items2);
-		
 		for(int j=0; j<allItems.size(); j++) {
 			Items item = itemRepository.save(allItems.get(j).toItemEntity());
 			long item_id = item.getItemId();

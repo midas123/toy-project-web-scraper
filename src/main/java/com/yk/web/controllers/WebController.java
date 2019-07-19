@@ -32,7 +32,7 @@ public class WebController {
 	@GetMapping("/scrap")
 	public String scrap(ItemRequestDto dto, Model model) {
 		long startTime = System.nanoTime();
-		HashMap<String, Long> Counts = webScrapService.scrapArticles(dto);
+		HashMap<String, Long> Counts = webScrapService.scrapArticles();
 		long endTime = System.nanoTime();
 		long duration = (endTime - startTime);
 		long convertedDuration = TimeUnit.SECONDS.convert(duration, TimeUnit.NANOSECONDS);
